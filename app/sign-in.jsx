@@ -1,37 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { useSession } from '../ctx';
+import { useSession } from '../utils/ctx';
 
 export default function SignIn() {
   const { signIn } = useSession();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSignIn = () => {
-    
-    if (email === 'usuario@ejemplo.com' && password === 'password123') {
-      signIn(); 
-      router.replace('/'); 
+  const handleSignIn = async () => {
+    console.log(" Botón presionado, intentando login...");
+    const success = await signIn(username, password);
+    console.log("¿Login exitoso?", success);
+
+    if (success) {
+      router.replace('/');
     } else {
-      setError('Correo o contraseña incorrectos');
+      setError("Credenciales inválidas");
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Iniciar Sesión</Text>
-      
+
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Nombre de usuario"
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
-        keyboardType="email-address"
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
